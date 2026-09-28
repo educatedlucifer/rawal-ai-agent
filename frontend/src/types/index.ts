@@ -242,10 +242,8 @@ export interface SandboxPoolStatus {
 export interface SandboxConfig {
   backend: string;
   effective_backend: string;
-  superserve_configured: boolean;
-  superserve_key_masked: string;
-  superserve_template: string;
-  pool_size: number;
+  celesto_configured: boolean;
+  celesto_key_masked: string;
   pool: SandboxPoolStatus;
 }
 

@@ -3,7 +3,7 @@ from app.sandbox.manager import (
     SANDBOX_CONFIG_KEY,
     SandboxManager,
     load_sandbox_config,
-    resolve_superserve_key,
+    resolve_celesto_key,
     sandboxes,
     save_sandbox_config,
 )
@@ -16,7 +16,7 @@ __all__ = [
     "SandboxInfo",
     "SandboxManager",
     "load_sandbox_config",
-    "resolve_superserve_key",
+    "resolve_celesto_key",
     "sandboxes",
     "save_sandbox_config",
 ]

@@ -49,9 +49,12 @@ services:
         sync: false
       - key: TELEGRAM_ALLOWED_USER_IDS
         sync: false
-      # Render does not expose a Docker daemon, so sandboxes run in-process.
+      # Render does not expose KVM, so use Celesto Cloud (set CELESTO_API_KEY)
+      # or fall back to the host-local process sandbox.
       - key: SANDBOX_BACKEND
-        value: local
+        value: cloud
+      - key: CELESTO_API_KEY
+        sync: false
       # Recommended for Render Free: remote Chromium over CDP keeps browser RAM
       # outside the 512 MB API container. Set this in the Render dashboard.
       - key: BROWSER_CDP_URL
@@ -60,13 +63,6 @@ services:
         value: "1"
       - key: BROWSER_IDLE_TIMEOUT_S
         value: "900"
-      # Superserve cloud sandboxes (optional — or set in Settings → Sandbox).
-      - key: SUPERSERVE_API_KEY
-        sync: false
-      - key: SUPERSERVE_TEMPLATE
-        value: superserve/base
-      - key: SUPERSERVE_POOL_SIZE
-        value: 5
       - key: DATA_DIR
         value: /data
       - key: WORKSPACE_ROOT

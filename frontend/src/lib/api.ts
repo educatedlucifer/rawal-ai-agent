@@ -323,9 +323,7 @@ export const api = {
   sandboxConfig: () => get<SandboxConfig>("/sandbox/config"),
   saveSandboxConfig: (body: {
     backend?: string;
-    superserve_api_key?: string;
-    superserve_template?: string;
-    pool_size?: number;
+    celesto_api_key?: string;
   }) => post<SandboxConfig>("/sandbox/config", body),
 
   // ---- providers ----

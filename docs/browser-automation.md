@@ -12,13 +12,7 @@ pip install -r requirements.txt
 python -m playwright install chromium
 ```
 
-The Docker sandbox image installs Playwright and Chromium with system dependencies during image build:
-
-```bash
-docker build -f sandbox/Dockerfile -t rawal-ai-agent-sandbox:latest sandbox
-```
-
-Playwright's official Docker guidance recommends pinning the Playwright image/dependency version, using `--init`, and allocating sufficient shared memory for Chromium. The supplied sandbox image installs the browser runtime, while the application keeps the browser session isolated per thread and closes all sessions during application shutdown.
+The application image installs Playwright Chromium during Docker build (`playwright install --with-deps chromium`). Celesto computers can also expose a CDP endpoint via `computer.browser()`. The application keeps the browser session isolated per thread and closes all sessions during shutdown.
 
 ## Agent tools
 

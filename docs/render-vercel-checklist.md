@@ -19,7 +19,7 @@ Without it, Render Free wipes `./data` on spin-down/restart.
    - `MONGO_URI` = Atlas URI · `DATABASE_NAME` = `rawal_ai`
    - `SECRET_KEY`, `JWT_SECRET` = auto-generated on first boot; pin stable values for prod
    - `CORS_ORIGINS` = `*` for first boot only, then exact Vercel origin
-   - `SANDBOX_BACKEND` = `local` (Render has no Docker daemon) — already in blueprint
+    - `SANDBOX_BACKEND` = `cloud` (Render has no KVM) with `CELESTO_API_KEY`
    - `BROWSER_CDP_URL` = `wss://…` remote Chromium (required on Free 512 MB; empty = local Chromium, may OOM)
 4. Deploy → verify:
    - `https://YOUR-RENDER-SERVICE.onrender.com/api/v1/health`

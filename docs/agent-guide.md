@@ -17,7 +17,7 @@ loses events.
 ## Permissions
 
 - **ask** (default for shared/prod): every mutating tool prompts; approve/deny/`allow_always` per run.
-- **auto**: only in a trusted isolated workspace (prefer Docker sandbox).
+- **auto**: only in a trusted isolated workspace (prefer a Celesto computer).
 - Interrupt anytime (`/interrupt`), steer mid-run (`/steer`) without restarting.
 
 ## Reliability built-in
@@ -27,12 +27,12 @@ repeat-tool-call guard, context compaction at `COMPACT_AT_RATIO`, stale-run
 recovery after restarts. If the agent looks stuck: check event feed + backend
 logs → Interrupt → retry with a healthy provider/model.
 
-## Sandbox backends (`SANDBOX_BACKEND`)
+## Computer backends (`SANDBOX_BACKEND`)
 
-`auto` (default) = Docker when reachable, else path-confined local.
-`docker` locally for untrusted code · `local` on Render/hosts without a daemon
-· `superserve` for cloud MicroVMs · `github` for heavy background jobs via
-Actions runners. See [configuration.md](configuration.md).
+`auto` (default) = Celesto local microVM when the SDK is installed, else
+path-confined local. `celesto` for isolated local computers · `cloud` for
+Celesto Cloud (`CELESTO_API_KEY`) · `local` on hosts without virtualization
+or in tests. See [configuration.md](configuration.md).
 
 ## Artifacts & sharing
 

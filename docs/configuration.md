@@ -18,11 +18,11 @@ Rawal AI uses Pydantic settings loaded from `backend/.env`. In managed hosting, 
 
 `DEFAULT_LLM_BASE_URL`, `DEFAULT_LLM_API_KEY`, and `DEFAULT_LLM_MODEL` define the fallback provider. The UI can add additional providers. `LLM_TIMEOUT_SECONDS` controls provider request timeouts. `MAX_AGENT_STEPS` limits one autonomous turn. `MAX_CONTEXT_TOKENS` and `COMPACT_AT_RATIO` control history compaction.
 
-## Sandbox
+## Computer (Celesto)
 
-`SANDBOX_BACKEND` supports `auto`, `docker`, `local`, `superserve`, and `github`. `auto` selects Docker when reachable and otherwise falls back to local. `SANDBOX_IMAGE` is the primary image. CPU, memory, idle timeout, network mode, and command timeout provide resource guardrails.
+`SANDBOX_BACKEND` supports `auto`, `celesto`, `cloud`, and `local`. `auto` selects a local Celesto microVM when the SDK is installed and otherwise falls back to a path-confined host process. `celesto` always uses a local microVM (`celesto doctor` must pass). `cloud` uses Celesto Cloud and needs `CELESTO_API_KEY`. `local` is the test/fallback host process.
 
-Render should use `local`. A trusted workstation should prefer `docker`. Do not run untrusted code with a host-local sandbox exposed to the public internet.
+A trusted workstation should prefer `celesto`. Render and other hosts without KVM should use `cloud`. Do not run untrusted code with a host-local sandbox exposed to the public internet.
 
 ## Integrations
 

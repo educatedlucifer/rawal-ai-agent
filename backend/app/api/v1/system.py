@@ -118,34 +118,26 @@ async def list_tools(_: Auth):
 
 
 # ---------------------------------------------------------------------------
-# Sandbox backend setting (local where deployed / superserve cloud pool)
+# Sandbox backend setting (Celesto local microVM / Celesto Cloud)
 # ---------------------------------------------------------------------------
 
 
 class SandboxConfigIn(BaseModel):
-    backend: str = ""  # auto | docker | local | superserve | github
-    superserve_api_key: str = ""
-    superserve_template: str = ""
-    pool_size: int | None = None
+    backend: str = ""  # auto | celesto | cloud | local
+    celesto_api_key: str = ""
 
 
 async def _sandbox_config_view() -> dict:
     from app.core.crypto import mask
-    from app.sandbox.manager import load_sandbox_config, resolve_superserve_key
+    from app.sandbox.manager import load_sandbox_config, resolve_celesto_key
 
     config = await load_sandbox_config()
-    key = resolve_superserve_key(config)
-    try:
-        pool_size = int(config.get("pool_size", settings.SUPERSERVE_POOL_SIZE))
-    except (TypeError, ValueError):
-        pool_size = settings.SUPERSERVE_POOL_SIZE
+    key = resolve_celesto_key(config)
     return {
         "backend": str(config.get("backend") or settings.SANDBOX_BACKEND),
         "effective_backend": await sandboxes.backend(),
-        "superserve_configured": bool(key),
-        "superserve_key_masked": mask(key),
-        "superserve_template": str(config.get("template") or settings.SUPERSERVE_TEMPLATE),
-        "pool_size": pool_size,
+        "celesto_configured": bool(key),
+        "celesto_key_masked": mask(key),
         "pool": await sandboxes.pool_status(),
     }
 
@@ -162,18 +154,11 @@ async def update_sandbox_config(body: SandboxConfigIn, _: Auth):
 
     patch: dict = {}
     if body.backend:
-        if body.backend not in ("auto", "docker", "local", "superserve", "github"):
+        if body.backend not in ("auto", "celesto", "cloud", "local"):
             raise AppError("Unknown sandbox backend", code="bad_backend")
         patch["backend"] = body.backend
-    if body.superserve_api_key.strip():
-        key = body.superserve_api_key.strip()
-        if not key.startswith("ss_live_"):
-            raise AppError("Superserve keys start with ss_live_", code="bad_key")
-        patch["superserve_key_enc"] = encrypt(key)
-    if body.superserve_template.strip():
-        patch["template"] = body.superserve_template.strip()[:120]
-    if body.pool_size is not None:
-        patch["pool_size"] = max(0, min(int(body.pool_size), 20))
+    if body.celesto_api_key.strip():
+        patch["celesto_key_enc"] = encrypt(body.celesto_api_key.strip())
     await save_sandbox_config(patch)
     await sandboxes.configure()
     return await _sandbox_config_view()

@@ -64,9 +64,18 @@ class BrowserSession:
                 ) from exc
             self._playwright = await async_playwright().start()
             try:
-                if self.remote:
+                cdp_url = settings.BROWSER_CDP_URL
+                if not cdp_url:
+                    from app.sandbox import sandboxes
+
+                    box = await sandboxes.peek(self.thread_id)
+                    getter = getattr(box, "browser_cdp_url", None)
+                    if callable(getter):
+                        cdp_url = await getter() or ""
+                if cdp_url:
+                    self.remote = True
                     self.browser = await self._playwright.chromium.connect_over_cdp(
-                        settings.BROWSER_CDP_URL, timeout=30_000
+                        cdp_url, timeout=30_000
                     )
                     self.context = self.browser.contexts[0] if self.browser.contexts else await self.browser.new_context(
                         viewport={"width": 1280, "height": 820},

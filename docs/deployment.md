@@ -13,7 +13,7 @@ This runbook covers the supported deployment shapes: one-container Docker, Rende
 
 ## Render backend
 
-Create a Blueprint from the private repository so Render uses `render.yaml`. Set the secret values in the Render dashboard rather than committing them. The minimum production set is `DEFAULT_LLM_API_KEY`, `AUTH_PASSWORD`, `SECRET_KEY`, `JWT_SECRET`, `MONGO_URI`, and `DATABASE_NAME`. Set `SANDBOX_BACKEND=local` because Render web services do not expose a Docker daemon.
+Create a Blueprint from the private repository so Render uses `render.yaml`. Set the secret values in the Render dashboard rather than committing them. The minimum production set is `DEFAULT_LLM_API_KEY`, `AUTH_PASSWORD`, `SECRET_KEY`, `JWT_SECRET`, `MONGO_URI`, and `DATABASE_NAME`. Set `SANDBOX_BACKEND=cloud` and `CELESTO_API_KEY` because Render web services do not expose KVM.
 
 For browser tools on Render Free, set `BROWSER_CDP_URL` to a private or managed Chromium-over-CDP WebSocket endpoint and keep `BROWSER_MAX_SESSIONS=1`. This keeps Chromium memory outside the 512 MB API container. Browserless, Browserbase, a private VPS, or an always-on local browser host can provide the endpoint. Keep the URL in Render's secret environment because it normally contains a provider token.
 
@@ -59,7 +59,7 @@ cp backend/.env.example backend/.env
 make dev
 ```
 
-Run the backend alone with `make backend` and the frontend alone with `make frontend`. Use `SANDBOX_BACKEND=local` when Docker is unavailable. Use `SANDBOX_BACKEND=docker` only after verifying that the backend can access the Docker daemon.
+Run the backend alone with `make backend` and the frontend alone with `make frontend`. Use `SANDBOX_BACKEND=celesto` after `celesto doctor` passes. Use `SANDBOX_BACKEND=cloud` with `CELESTO_API_KEY` on hosts without local virtualization. Use `SANDBOX_BACKEND=local` only when a Celesto computer is unavailable.
 
 ## Termux
 

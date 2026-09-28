@@ -77,21 +77,21 @@ class Settings(BaseSettings):
     MAX_CONTEXT_TOKENS: int = 160_000
     COMPACT_AT_RATIO: float = 0.75
 
-    # ---- sandbox ---------------------------------------------------------
-    SANDBOX_BACKEND: Literal["docker", "local", "auto", "superserve", "github"] = "auto"
-    SANDBOX_IMAGE: str = "rawal-ai-sandbox:latest"
-    SANDBOX_FALLBACK_IMAGE: str = "python:3.12-slim"
+    # ---- sandbox (Celesto computers) -------------------------------------
+    # auto = Celesto local microVM when the SDK is installed, else host-local.
+    # celesto = local Celesto computer (Firecracker/QEMU microVM).
+    # cloud = Celesto Cloud (needs CELESTO_API_KEY).
+    # local = path-confined host process (tests / hosts without virtualization).
+    SANDBOX_BACKEND: Literal["auto", "celesto", "cloud", "local"] = "auto"
+    SANDBOX_IMAGE: str = "celesto-microvm"
+    SANDBOX_FALLBACK_IMAGE: str = "celesto-microvm"
     SANDBOX_CPUS: float = 1.0
     SANDBOX_MEMORY_MB: int = 2048
     SANDBOX_IDLE_TIMEOUT_S: int = 1800
     SANDBOX_NETWORK: str = "bridge"
     SANDBOX_COMMAND_TIMEOUT_S: int = 300
-    # Superserve cloud sandboxes (https://api.superserve.ai). Key can also
-    # live in the DB-backed sandbox setting (Settings → Sandbox).
-    SUPERSERVE_API_KEY: str = ""
-    SUPERSERVE_API_URL: str = "https://api.superserve.ai"
-    SUPERSERVE_TEMPLATE: str = "superserve/base"
-    SUPERSERVE_POOL_SIZE: int = 5
+    CELESTO_API_KEY: str = ""
+    CELESTO_API_URL: str = "https://api.celesto.ai"
     # Optional remote Chromium endpoint (Browserless, Browserbase, or a private
     # browser service). When set, Render never launches a local browser.
     BROWSER_CDP_URL: str = ""

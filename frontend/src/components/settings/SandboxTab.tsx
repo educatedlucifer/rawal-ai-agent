@@ -1,4 +1,4 @@
-import { Cloud, Cpu, Github, Loader2, MonitorDown, Save, Sparkles } from "lucide-react";
+import { Cloud, Cpu, Loader2, MonitorDown, Save, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
@@ -12,31 +12,25 @@ const BACKENDS = [
     id: "auto",
     icon: Sparkles,
     title: "Auto",
-    desc: "Docker when available, otherwise the deploy machine itself.",
+    desc: "Celesto microVM when available, otherwise the deploy machine itself.",
+  },
+  {
+    id: "celesto",
+    icon: Cpu,
+    title: "Celesto",
+    desc: "Isolated local microVM per chat. Needs Celesto setup on the host (celesto doctor).",
+  },
+  {
+    id: "cloud",
+    icon: Cloud,
+    title: "Celesto Cloud",
+    desc: "Remote persistent computers. Needs your Celesto API key.",
   },
   {
     id: "local",
     icon: MonitorDown,
     title: "Local",
-    desc: "Run on the machine where the agent is deployed. Fastest, no isolation.",
-  },
-  {
-    id: "docker",
-    icon: Cpu,
-    title: "Docker",
-    desc: "Isolated container per chat. Needs a Docker daemon on the host.",
-  },
-  {
-    id: "superserve",
-    icon: Cloud,
-    title: "Superserve cloud",
-    desc: "Firecracker microVMs in the cloud from a warm pool. Needs your API key.",
-  },
-  {
-    id: "github",
-    icon: Github,
-    title: "GitHub Actions",
-    desc: "Free cloud runners in your repo. Minutes per command — best for heavy background jobs.",
+    desc: "Run on the machine where the agent is deployed. Fastest, no isolation. Tests only.",
   },
 ] as const;
 
@@ -44,8 +38,6 @@ export function SandboxTab() {
   const [config, setConfig] = useState<SandboxConfig | null>(null);
   const [backend, setBackend] = useState("auto");
   const [apiKey, setApiKey] = useState("");
-  const [template, setTemplate] = useState("superserve/base");
-  const [poolSize, setPoolSize] = useState(5);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
@@ -55,8 +47,6 @@ export function SandboxTab() {
     if (!current) return;
     setConfig(current);
     setBackend(current.backend);
-    setTemplate(current.superserve_template);
-    setPoolSize(current.pool_size);
   };
 
   useEffect(() => {
@@ -70,9 +60,7 @@ export function SandboxTab() {
     try {
       const updated = await api.saveSandboxConfig({
         backend,
-        superserve_api_key: apiKey.trim() || undefined,
-        superserve_template: backend === "superserve" ? template.trim() || undefined : undefined,
-        pool_size: backend === "superserve" ? poolSize : undefined,
+        celesto_api_key: apiKey.trim() || undefined,
       });
       setConfig(updated);
       setApiKey("");
@@ -89,7 +77,7 @@ export function SandboxTab() {
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-sm font-semibold tracking-tight">Sandbox</h3>
+        <h3 className="text-sm font-semibold tracking-tight">Computer</h3>
         <p className="text-[12.5px] text-muted-foreground">
           Where the agent runs code. Currently active:{" "}
           <Badge tone="primary">{config.effective_backend}</Badge>
@@ -122,56 +110,24 @@ export function SandboxTab() {
         ))}
       </div>
 
-      {backend === "superserve" ? (
+      {backend === "cloud" ? (
         <div className="space-y-3 rounded-xl border border-border bg-surface p-3.5">
           <Field
-            label="Superserve API key"
-            hint={config.superserve_configured ? `Saved (${config.superserve_key_masked}) — leave empty to keep it.` : "From console.superserve.ai → Settings → API keys (ss_live_…). Stored encrypted."}
+            label="Celesto API key"
+            hint={
+              config.celesto_configured
+                ? `Saved (${config.celesto_key_masked}) — leave empty to keep it.`
+                : "From celesto.ai → API keys. Stored encrypted."
+            }
           >
             <Input
               type="password"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder={config.superserve_configured ? "••••••••" : "ss_live_…"}
+              placeholder={config.celesto_configured ? "••••••••" : "celesto_…"}
               className="h-9 font-mono text-xs"
             />
           </Field>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Field label="Template" hint="Ubuntu 24.04 base, or your own template name/UUID.">
-              <Input
-                value={template}
-                onChange={(e) => setTemplate(e.target.value)}
-                placeholder="superserve/base"
-                className="h-9 font-mono text-xs"
-              />
-            </Field>
-            <Field label="Warm pool size" hint="Standby cloud boxes (0–20). Unhealthy ones auto-replace.">
-              <Input
-                type="number"
-                min={0}
-                max={20}
-                value={poolSize}
-                onChange={(e) => setPoolSize(Number(e.target.value))}
-                className="h-9 font-mono text-xs"
-              />
-            </Field>
-          </div>
-          <div className="rounded-lg bg-muted px-3 py-2 text-[11.5px] text-muted-foreground">
-            Pool:{" "}
-            {config.pool.active ? (
-              <>
-                <span className="font-medium text-foreground">{config.pool.warm ?? 0}/{config.pool.size ?? 0} warm</span>
-                {config.pool.quota_exhausted ? (
-                  <span className="text-danger"> · quota exhausted — backing off, chats fall back to local</span>
-                ) : null}
-                {config.pool.last_error && !config.pool.quota_exhausted ? (
-                  <span> · last error: {config.pool.last_error}</span>
-                ) : null}
-              </>
-            ) : (
-              "starts on the first cloud chat"
-            )}
-          </div>
         </div>
       ) : null}
 
@@ -180,7 +136,7 @@ export function SandboxTab() {
       <div className="flex items-center gap-2">
         <Button size="sm" disabled={busy} onClick={() => void save()}>
           {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
-          Save sandbox settings
+          Save computer settings
         </Button>
         {saved ? <span className="text-[12.5px] text-emerald-500">Saved — new chats use it.</span> : null}
       </div>

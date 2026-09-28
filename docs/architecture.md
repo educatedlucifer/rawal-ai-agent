@@ -8,7 +8,7 @@ flowchart LR
   API --> Runner[AgentRunner]
   Runner --> LLM[Configured provider]
   Runner --> Tools[Tool registry]
-  Tools --> Sandbox[Docker or local sandbox]
+  Tools --> Sandbox[Celesto computer]
   Runner --> DB[(SQLite or SQL DB)]
   DB -. optional replica .-> Mongo[(MongoDB)]
   Runner -. optional archive .-> Drive[Google Drive]
@@ -23,7 +23,7 @@ The event bus assigns sequence numbers to observable thread events. The browser 
 
 ## Trust boundaries
 
-The browser is an untrusted client. Authentication is enforced by the API. Provider and integration secrets remain server-side. The sandbox is the execution boundary for agent-generated commands. The local backend rejects paths outside the configured workspace root. Docker is the preferred isolation layer when available.
+The browser is an untrusted client. Authentication is enforced by the API. Provider and integration secrets remain server-side. The sandbox is the execution boundary for agent-generated commands. The local backend rejects paths outside the configured workspace root. Celesto microVMs are the preferred isolation layer when available.
 
 ## Persistence model
 
@@ -37,4 +37,4 @@ The default process is designed for a single service instance because the in-mem
 
 [1]: https://fastapi.tiangolo.com/advanced/websockets/ "FastAPI WebSockets"
 [2]: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events "MDN Server-sent events"
-[3]: https://docs.docker.com/engine/security/ "Docker Engine security"
+[3]: https://docs.celesto.ai "Celesto documentation"

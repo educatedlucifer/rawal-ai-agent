@@ -19,10 +19,9 @@ services:
       DEFAULT_LLM_BASE_URL: ${DEFAULT_LLM_BASE_URL:-https://api.openai.com/v1}
       DEFAULT_LLM_API_KEY: ${DEFAULT_LLM_API_KEY:-}
       DEFAULT_LLM_MODEL: ${DEFAULT_LLM_MODEL:-gpt-4o-mini}
-      # Sibling containers: the backend talks to the host daemon over this socket.
-      SANDBOX_BACKEND: ${SANDBOX_BACKEND:-docker}
-      SANDBOX_IMAGE: ${SANDBOX_IMAGE:-rawal-ai-agent-sandbox:latest}
-      DOCKER_HOST: unix:///var/run/docker.sock
+      SANDBOX_BACKEND: ${SANDBOX_BACKEND:-local}
+      SANDBOX_IMAGE: ${SANDBOX_IMAGE:-celesto-microvm}
+      CELESTO_API_KEY: ${CELESTO_API_KEY:-}
       DATA_DIR: /data
       WORKSPACE_ROOT: /data/workspaces
       CORS_ORIGINS: ${CORS_ORIGINS:-*}
@@ -32,11 +31,6 @@ services:
       - path: backend/.env
         required: false
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      # Workspaces are bind-mounted into sandbox containers by the host daemon, so
-      # this path must be identical inside and outside this container.
-      # Works on Linux/macOS/Windows (Docker Desktop) — ${PWD} is intentionally
-      # avoided because Windows Compose does not expand it.
       - ./data:/data
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/api/v1/health"]
@@ -45,15 +39,3 @@ services:
       retries: 3
       start_period: 40s
     restart: unless-stopped
-    depends_on:
-      sandbox-image:
-        condition: service_completed_successfully
-
-  sandbox-image:
-    # One-shot build so `docker compose up` has the sandbox image ready.
-    build:
-      context: ./sandbox
-      dockerfile: Dockerfile
-    image: rawal-ai-agent-sandbox:latest
-    command: ["true"]
-    restart: "no"

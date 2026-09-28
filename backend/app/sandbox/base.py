@@ -1,4 +1,4 @@
-"""Sandbox contract shared by the Docker and local backends."""
+"""Sandbox contract shared by Celesto computers and the host-local fallback."""
 
 from __future__ import annotations
 

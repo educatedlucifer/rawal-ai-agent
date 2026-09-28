@@ -26,7 +26,7 @@ Render's ephemeral filesystem is not durable across all restarts. Configure `MON
 
 ## Sandbox failures
 
-On local Docker deployments, verify `docker info`, the Docker socket mount, and the sandbox image. On Render, set `SANDBOX_BACKEND=local`. A Docker-only setting on Render will fail because Render does not expose a Docker daemon to the web service.
+On a workstation, run `celesto doctor` and set `SANDBOX_BACKEND=celesto`. On Render and other hosts without KVM, set `SANDBOX_BACKEND=cloud` and `CELESTO_API_KEY`. Use `SANDBOX_BACKEND=local` only for tests or trusted host-process execution.
 
 ## Frontend failures
 

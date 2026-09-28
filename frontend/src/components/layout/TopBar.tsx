@@ -258,13 +258,13 @@ export function TopBar() {
       {capabilities ? (
         <Tooltip
           content={
-            capabilities.sandbox_backend === "docker"
-              ? "Each chat gets its own isolated container"
-              : "Docker unavailable — the agent runs on the host process"
+            capabilities.sandbox_backend === "celesto" || capabilities.sandbox_backend === "cloud"
+              ? "Each chat gets its own isolated Celesto computer"
+              : "Celesto unavailable — the agent runs on the host process"
           }
         >
           <Badge
-            tone={capabilities.sandbox_backend === "docker" ? "success" : "warning"}
+            tone={capabilities.sandbox_backend === "celesto" || capabilities.sandbox_backend === "cloud" ? "success" : "warning"}
             className="hidden lg:inline-flex"
           >
             <ShieldCheck className="size-3" />

@@ -30,8 +30,9 @@
 2. Set strong `AUTH_PASSWORD`; keep `ALLOW_ANONYMOUS=false` on any public host.
 3. Set `CORS_ORIGINS` to the exact frontend origin (never `*` in production).
 4. Use MongoDB (`MONGO_URI`) on ephemeral hosts (Render Free) — local SQLite is wiped.
-5. Use `SANDBOX_BACKEND=docker` locally for untrusted code; `local` only on hosts
-   without a Docker daemon (Render) and never exposed unauthenticated.
+  5. Use `SANDBOX_BACKEND=celesto` locally for untrusted code; `cloud` on hosts
+     without KVM (Render) with `CELESTO_API_KEY`; `local` only for tests and never
+     exposed unauthenticated.
 6. Scope tokens minimally (GitHub fine-grained, Telegram allow-list, MCP bearer).
 7. Put TLS in front of self-hosted deployments; rotate any secret pasted into chat/logs.
 8. On Render Free, set `BROWSER_CDP_URL` to a remote Chromium endpoint instead of

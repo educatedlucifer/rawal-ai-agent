@@ -125,7 +125,7 @@ export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenCh
               </TabsTrigger>
               <TabsTrigger value="sandbox" className="text-xs sm:text-sm px-2.5 py-1.5 whitespace-nowrap">
                 <Container className="size-3.5" />
-                Sandbox
+                Computer
               </TabsTrigger>
               <TabsTrigger value="voice" className="text-xs sm:text-sm px-2.5 py-1.5 whitespace-nowrap">
                 <Mic className="size-3.5" />

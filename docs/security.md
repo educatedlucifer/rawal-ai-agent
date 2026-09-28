@@ -8,7 +8,7 @@ Use fine-grained GitHub tokens with only the required repository permissions. Re
 
 ## Sandbox policy
 
-Docker is preferred for untrusted code. The local sandbox confines paths and blocks root workspace deletion, but it does not provide process-level isolation equivalent to Docker. Do not expose a local-sandbox instance to untrusted users. Keep command timeouts and resource limits enabled.
+Celesto microVMs (local or Celesto Cloud) are preferred for untrusted code. The host-local sandbox confines paths and blocks root workspace deletion, but it does not provide VM isolation. Do not expose a local-sandbox instance to untrusted users. Keep command timeouts and resource limits enabled.
 
 ## Private repository installer
 
@@ -22,4 +22,4 @@ If a secret is exposed, revoke it immediately, create a replacement, update the 
 
 [1]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github "GitHub authentication security"
 [2]: https://owasp.org/www-project-top-ten/ "OWASP Top Ten"
-[3]: https://docs.docker.com/engine/security/ "Docker Engine security"
+[3]: https://docs.celesto.ai "Celesto documentation"

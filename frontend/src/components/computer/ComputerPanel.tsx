@@ -56,7 +56,7 @@ export function ComputerPanel() {
   const { dir, listRef } = useTabDirection(TAB_ORDER, tab);
 
   const status = sandbox?.status ?? "not_started";
-  const isolated = sandbox?.backend === "docker";
+  const isolated = sandbox?.backend === "celesto" || sandbox?.backend === "cloud";
 
   // Keep the sandbox alive while the panel is open, and show live status on
   // every open: views themselves (re)mount lazily, so each open/reopen starts
@@ -100,7 +100,7 @@ export function ComputerPanel() {
         <div className="min-w-0">
           <p className="text-[13px] font-medium leading-tight">Agent's Computer</p>
           <p className="truncate text-[10.5px] leading-tight text-muted-foreground">
-            {isolated ? "isolated container" : "host process"} · {status}
+            {isolated ? "Celesto computer" : "host process"} · {status}
           </p>
         </div>
 

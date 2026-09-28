@@ -35,7 +35,7 @@ npx rawal-ai-agent --mode local --dir rawal-ai-agent
 | 🧠 Agent runtime | Autonomous multi-step loop, tool execution, steering, interrupt, permissions (`ask`/`auto`), context compaction, repeat-loop guard, visible failure states |
 | 💻 Dev workspace | Chat, projects + threads, file tree + editor, terminal, browser preview, artifacts, Git ops, live activity |
 | 🔌 Models | OpenAI-compatible + Anthropic-compatible + custom proxies, discovery, streaming, retries, stall watchdog |
-| 🛡️ Isolation | Docker sandbox when available; path-confined local sandbox for Render/hosts without a daemon; Superserve + GitHub Actions backends |
+| 🛡️ Isolation | Celesto microVM computers (local or Celesto Cloud); path-confined host fallback for tests and hosts without virtualization |
 | 🌐 Connectivity | REST + SSE + WebSockets, MCP servers + registry, GitHub/Vercel/Render/HuggingFace/Drive/Telegram |
 | 📱 Clients | Responsive web UI, installable PWA, Capacitor Android shell, desktop + mobile browsers |
 | ⚙️ Operations | SQLite default, MongoDB for ephemeral hosts, Drive archives, `/health`, structured logs, blueprints |
@@ -99,12 +99,12 @@ docker compose up --build
 │   ├── app/agent/    Prompts, loop, memory, permissions, compaction, scheduler
 │   ├── app/api/v1/   Auth, projects, threads, chat, files, terminal, preview
 │   ├── app/llm/      Provider clients, streaming, retries, stall watchdog
-│   ├── app/sandbox/  Docker, local, GitHub Actions, Superserve backends
+│   ├── app/sandbox/  Celesto computers (local microVM / Celesto Cloud) + host-local fallback
 │   ├── app/tools/    Files, shell, browser, web, git, MCP, tasks, artifacts
 │   └── tests/        Regression + integration tests
 ├── frontend/         React 18 + Vite + TS + Tailwind (PWA + Capacitor shell)
 ├── cli/              npm installer source → published as `rawal-ai-agent`
-├── sandbox/          Docker image for isolated execution
+├── sandbox/          Legacy image (unused; computers now run on Celesto)
 ├── docs/             Full guides (start at docs/README.md)
 ├── Dockerfile        Prod image: frontend build + backend runtime
 ├── docker-compose.yml  Local single-origin stack
